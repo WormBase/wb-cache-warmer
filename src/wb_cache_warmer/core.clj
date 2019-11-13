@@ -148,8 +148,10 @@
 
 (def cli-options
   [["-H" "--hostname HOSTNAME" "Host to cache from"
-    :default "wormbase-website-production.us-east-1.elasticbeanstalk.com"
-    ]
+    :default "wormbase-website-production.us-east-1.elasticbeanstalk.com"]
+   ["-n" "--thread-count N" "Thread counts"
+    :default 5
+    :parse-fn #(Integer/parseInt %)]
    ["-a" "--schedule-all" "Cache all endpoints that is considered slow"
     :default false]
    [nil "--schedule-sample" "Cache a preset sample of endpoints"
@@ -161,17 +163,18 @@
   [& args]
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
     (do
-      (info "Options" options)
+      (info "CLI Options" options errors)
       (mount/start)
       (let [db (d/db datomic-conn)
-            hostname (:hostname options)]
+            hostname (:hostname options)
+            n (:thread-count options)]
         (do
           (cond
            (:schedule-all options) (schedule-jobs-all db hostname)
            (:schedule-sample options) (schedule-jobs-sample db hostname))
 
           (->> (partial worker db)
-               (repeatedly 5)
+               (repeatedly n)
                (pmap deref) ; wait for the futures to return
                (doall) ; force the side effects
                )
