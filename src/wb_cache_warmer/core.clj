@@ -27,11 +27,10 @@
 (defn schedule-job [url]
   (scheduler-put! {:url url}))
 
-(defn schedule-jobs [hostname path-pattern id-fun]
-  (let [ids (id-fun)
-        format-url (fn [id]
+(defn schedule-jobs [hostname path-pattern ids]
+  (let [format-url (fn [id]
                      (let [path (clojure.string/replace path-pattern #"\{id\}" id)]
-                       (format "http://%s%s" hostname path)))]
+                       (format "http://%s%s?content-type=application/json" hostname path)))]
     (->>
      ids
      (map format-url)
@@ -39,30 +38,65 @@
      (doall))))
 
 (defn get-eids-by-type
-  "get all datomic entity ids of a given type
+  "get all WBID of a given type
   indicated by its unique attribute ident
   such as :gene/id"
   [db ident-attr]
-  (d/q '[:find [?eid ...]
+  (d/q '[:find [?id ...]
          :in $ ?ident-attr
-         :where [?eid ?ident-attr]]
+         :where [_ ?ident-attr ?id]]
        db ident-attr))
+
+(def slow-path-patterns
+  ["/rest/widget/gene/{id}/interactions"
+   "/rest/widget/gene_class/{id}/current_genes"
+   "/rest/widget/gene_class/{id}/previous_genes"
+   "/rest/widget/interaction/{id}/interactions"
+   "/rest/widget/molecule/{id}/affected"
+   "/rest/widget/phenotype/{id}/rnai"
+   "/rest/widget/phenotype/{id}/variation"
+   "/rest/widget/strain/{id}/contains"
+   "/rest/widget/transposon_family/{id}/var_motifs"
+   "/rest/widget/wbprocess/{id}/interactions"
+   "/rest/field/gene/{id}/interaction_details"
+   "/rest/field/gene/{id}/interactions"
+   "/rest/field/interaction/{id}/interaction_details"
+   ;"/rest/field/interaction/{id}/interactions"
+   "/rest/field/wbprocess/{id}/interaction_details"
+   "/rest/field/wbprocess/{id}/interactions"])
 
 (defn schedule-jobs-all [db hostname]
   ;; schedule something for testing
+  (let [id-fun (fn [path-pattern]
+                 (let [[_ _ _ type _ widget] (clojure.string/split path-pattern #"\/")]
+                   (cond
+                    (and (= type "gene")
+                         (or (= widget "interactions")
+                             (= widget "interaction_details")))
+                    (d/q '[:find [?eid ...]
+                           :in $
+                           :where
+                           [_ :interaction.interactor-overlapping-gene/gene ?g]
+                           [?g :gene/id ?eid]]
+                         db)
+                    :else (get-eids-by-type db (keyword (format "%s/id" (clojure.string/replace type #"_" "-")))))))]
+    (->> slow-path-patterns
+         (map (fn [path-pattern]
+                   (let [ids (id-fun path-pattern)]
+                     (schedule-jobs hostname path-pattern (take 1 ids)))))
+         (doall)))
 )
 
 (defn schedule-jobs-sample [db hostname]
   (schedule-jobs hostname
                  "/rest/widget/gene/{id}/interactions"
-                 (fn []
-                   ["WBGene00015146",
-                    "WBGene00000904",
-                    "WBGene00006763",
-                    "WBGene00002285"
-                    "WBGene00003912"
-                    "WBGene00004357"
-                    "WBGene00000103"]))
+                 ["WBGene00015146"
+                  "WBGene00000904"
+                  "WBGene00006763"
+                  "WBGene00002285"
+                  "WBGene00003912"
+                  "WBGene00004357"
+                  "WBGene00000103"])
   )
 
 
