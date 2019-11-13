@@ -37,15 +37,16 @@
      (map schedule-job)
      (doall))))
 
-(defn get-eids-by-type
-  "get all WBID of a given type
-  indicated by its unique attribute ident
-  such as :gene/id"
-  [db ident-attr]
-  (d/q '[:find [?id ...]
-         :in $ ?ident-attr
-         :where [_ ?ident-attr ?id]]
-       db ident-attr))
+(defn get-ids-by-type
+  "get all WBID of a given type"
+  [db type]
+  (let [db-type (clojure.string/replace type #"_" "-")
+        ident-attr (keyword (format "%s/id" db-type))]
+    (d/q '[:find [?id ...]
+           :in $ ?ident-attr
+           :where [_ ?ident-attr ?id]]
+         db
+         ident-attr)))
 
 (def slow-path-patterns
   ["/rest/widget/gene/{id}/interactions"
@@ -79,7 +80,7 @@
                            [_ :interaction.interactor-overlapping-gene/gene ?g]
                            [?g :gene/id ?eid]]
                          db)
-                    :else (get-eids-by-type db (keyword (format "%s/id" (clojure.string/replace type #"_" "-")))))))]
+                    :else (get-ids-by-type db type))))]
     (->> slow-path-patterns
          (map (fn [path-pattern]
                    (let [ids (id-fun path-pattern)]
