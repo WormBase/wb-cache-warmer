@@ -24,18 +24,14 @@
 (defn- scheduler-stats []
   (get (dq/stats q) "cache_warmer_queue"))
 
-(defn schedule-job [url]
-  (scheduler-put! {:url url}))
+(defn job-creator-fun [hostname path-pattern]
+  (fn [id]
+    (let [path (clojure.string/replace path-pattern #"\{id\}" id)
+          url (format "http://%s%s?content-type=application/json" hostname path)]
+      {:url url})))
 
-(defn schedule-jobs [hostname path-pattern ids]
-  (let [format-url (fn [id]
-                     (let [path (clojure.string/replace path-pattern #"\{id\}" id)]
-                       (format "http://%s%s?content-type=application/json" hostname path)))]
-    (->>
-     ids
-     (map format-url)
-     (map schedule-job)
-     (doall))))
+(defn schedule-job [job-creator id]
+  (scheduler-put! (job-creator id)))
 
 (defn get-ids-by-type
   "get all WBID of a given type"
@@ -82,22 +78,24 @@
                          db)
                     :else (get-ids-by-type db type))))]
     (->> slow-path-patterns
-         (map (fn [path-pattern]
-                   (let [ids (id-fun path-pattern)]
-                     (schedule-jobs hostname path-pattern (take 1 ids)))))
+         (mapcat (fn [path-pattern]
+                   (let [ids (id-fun path-pattern)
+                         job-creator (job-creator-fun hostname path-pattern)]
+                     (map schedule-job (repeat job-creator) ids))))
          (doall)))
 )
 
 (defn schedule-jobs-sample [db hostname]
-  (schedule-jobs hostname
-                 "/rest/widget/gene/{id}/interactions"
-                 ["WBGene00015146"
-                  "WBGene00000904"
-                  "WBGene00006763"
-                  "WBGene00002285"
-                  "WBGene00003912"
-                  "WBGene00004357"
-                  "WBGene00000103"])
+  (let [job-creator (job-creator-fun hostname "/rest/widget/gene/{id}/interactions")]
+    (->> ["WBGene00015146"
+          "WBGene00000904"
+          "WBGene00006763"
+          "WBGene00002285"
+          "WBGene00003912"
+          "WBGene00004357"
+          "WBGene00000103"]
+         (map schedule-job (repeat job-creator))
+         (doall)))
   )
 
 
