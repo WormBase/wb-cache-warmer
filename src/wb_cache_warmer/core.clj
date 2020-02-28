@@ -146,7 +146,7 @@
 
 (def cli-options
   [["-H" "--hostname HOSTNAME" "Host to cache from"
-    :default "wormbase-website-production.us-east-1.elasticbeanstalk.com"]
+    :default "wormbase-website-preproduction.us-east-1.elasticbeanstalk.com"]
    ["-n" "--thread-count N" "Thread counts"
     :default 5
     :parse-fn #(Integer/parseInt %)]
