@@ -45,7 +45,8 @@
          ident-attr)))
 
 (def slow-path-patterns
-  ["/rest/widget/gene_class/{id}/current_genes"
+  [
+   "/rest/widget/gene_class/{id}/current_genes"
    "/rest/widget/gene_class/{id}/previous_genes"
    "/rest/widget/molecule/{id}/affected"
    "/rest/widget/phenotype/{id}/rnai"
@@ -55,14 +56,12 @@
 
    "/rest/widget/gene/{id}/interactions"
    "/rest/field/gene/{id}/interaction_details"
-   "/rest/field/gene/{id}/interactions"
+
+   "/rest/widget/wbprocess/{id}/interactions"
+   "/rest/field/wbprocess/{id}/interaction_details"
 
    "/rest/widget/interaction/{id}/interactions"
    "/rest/field/interaction/{id}/interaction_details"
-   ;;"/rest/field/interaction/{id}/interactions"
-   "/rest/widget/wbprocess/{id}/interactions"
-   "/rest/field/wbprocess/{id}/interaction_details"
-   "/rest/field/wbprocess/{id}/interactions"
    ])
 
 (defn schedule-jobs-all [db hostname]
