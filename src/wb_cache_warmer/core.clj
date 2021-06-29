@@ -156,31 +156,36 @@
     :default false]
    [nil "--schedule-sample" "Cache a preset sample of endpoints"
     :default false]
+   ["-h" "--help"]
    ])
 
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
-    (do
-      (info "CLI Options" options errors)
-      (mount/start)
-      (let [db (d/db datomic-conn)
-            hostname (:hostname options)
-            n (:thread-count options)]
-        (do
-          (cond
-           (:schedule-all options) (schedule-jobs-all db hostname)
-           (:schedule-sample options) (schedule-jobs-sample db hostname))
+    (cond
+     (:help options)
+     (println summary)
+     :else
+     (do
+       (info "CLI Options" options errors)
+       (mount/start)
+       (let [db (d/db datomic-conn)
+             hostname (:hostname options)
+             n (:thread-count options)]
+         (do
+           (cond
+            (:schedule-all options) (schedule-jobs-all db hostname)
+            (:schedule-sample options) (schedule-jobs-sample db hostname))
 
-          (->> (partial worker db)
-               (repeatedly n)
-               (pmap deref) ; wait for the futures to return
-               (doall) ; force the side effects
-               )
+           (->> (partial worker db)
+                (repeatedly n)
+                (pmap deref) ; wait for the futures to return
+                (doall) ; force the side effects
+                )
 
-          (info "Stopping!" (scheduler-stats))
+           (info "Stopping!" (scheduler-stats))
 
-          ))
+           ))
 
-      )))
+       ))))
