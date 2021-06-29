@@ -4,29 +4,56 @@ FIXME: description
 
 ## Installation
 
-Download from http://example.com/FIXME.
+Please ensure JVM runtime, Clojure and [Leiningen](https://github.com/technomancy/leiningen) are installed before moving forward.
 
-## Usage
+## Build the Cache Warmer CLI
 
-FIXME: explanation
+To run the cache warmer, you need to build the executable for the cache warmer CLI
 
-    $ java -jar wb-cache-warmer-0.1.0-standalone.jar [args]
+At the root of project, run
 
-## Options
+```
+lein uberjar
+```
 
-FIXME: listing of options this app accepts.
+The executables will be a `.jar` file in the `target/uberjar/` folder.
 
-## Examples
+## Run the executable (CLI)
+
+After building the executable, you can run it by
+
+```
+cd target/uberjar/
+
+java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar [options]
+
+```
+
+_Note: the exact file name (in particular, the "0.1.0-SNAPSHOT" part) would vary based on the version number specificed in [project.clj](project.cli). However, the executable will be the one file with the postfix `-standalone.jar`_
+
+### Options
+
+```
+  -H, --hostname HOSTNAME  wormbase-website-preproduction.us-east-1.elasticbeanstalk.com  Host to cache from
+  -n, --thread-count N     5                                                              Thread counts
+  -a, --schedule-all                                                                      Cache all endpoints that is considered slow
+      --schedule-sample                                                                   Cache a preset sample of endpoints
+  -h, --help
+```
+
+
+
+### Examples
+
+
 
 ...
 
-### Bugs
+### Known issues
 
-...
+- The cache warmer will keep retrying failed upstream API endpoints until successful. This ensures that when the problem in the endpoints is addressed, the response will be cached without needing to re-run the cache warmer. This however means that failures in the endpoint that aren't addressed will cause the cahce warmer to run forever. An example of such a failure is timeout in the upstream API endpoint that persists despite of retries. In this case, a person needs to terminate the cache warmer.
 
-### Any Other Sections
-### That You Think
-### Might be Useful
+
 
 ## License
 
