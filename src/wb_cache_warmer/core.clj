@@ -120,14 +120,18 @@
           (try
             (let [job (deref job-ref)]
               (try
-                (debug "Starting" job)
+                (debug "Starting caching" job)
                 (execute-job job)
-                (debug "Succeeded" job)
+                (debug "Succeeded caching" job)
                 (scheduler-complete! job-ref)
 
                 (catch Exception e
-                  (error e)
-                  (warn "Failed and scheduled to retry" job)
+                  (error "Failed caching"
+                         (format "%s %s"
+                                 (:status (ex-data e))
+                                 (:reason-phrase (ex-data e)))
+                         job)
+                  (warn "Scheduled to retry" job)
                   (scheduler-retry! job-ref) ; retried items are added at the end of the queue
                   )))
             (catch java.io.IOException e
