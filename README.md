@@ -1,32 +1,149 @@
 # wb-cache-warmer
 
-FIXME: description
+The cache warmer is a command line tool to help pre-cache a set of slow endpoints of the WormBase webapp.
 
-## Installation
+## Technical overview
 
-Download from http://example.com/FIXME.
+The cache warmer pings each endpoints of the webapp, resulting in the endpoints to be cached. The slow endpoints are described as parameterized URL patterns that, when combined with IDs (such as a WBGene ID), produce the actual URLs for the endpoints. The actual cache mechanism is implemented by the webapp.
 
-## Usage
+The cache warmer is build for **parallelization**. It spawns multiple processes to cache different endpoints in parallel. The only constraint is how much load the upstream API can take.
 
-FIXME: explanation
+The cache warmer script can be **resumed if interrupted**. It uses a job queue backed by the disk to track the progress of endpoint caching.
 
-    $ java -jar wb-cache-warmer-0.1.0-standalone.jar [args]
+The bulk of the code can be found at [src/wb_cache_warmer/core.clj](src/wb_cache_warmer/core.clj).
 
-## Options
+## Prerequisites
 
-FIXME: listing of options this app accepts.
+_Developing on the shared dev instance would meant that all the following prerequisites are met without any additional work._
 
-## Examples
+_Similarly, if you have developed for the [WormBase/wormbase_rest](https://github.com/WormBase/wormbase_rest), the prerequisites are likely to be the same._
 
-...
+Otherwise, please ensure Java, Clojure and [Leiningen](https://github.com/technomancy/leiningen) are installed before moving forward.
 
-### Bugs
+This app is developed with Clojure 1.9.0, Leiningen (lein) 2.8.3, and OpenJDK 1.8.0_265.
 
-...
+## Build the cache warmer CLI (executable jar)
 
-### Any Other Sections
-### That You Think
-### Might be Useful
+To run the cache warmer, you need to build the executable for the cache warmer CLI
+
+At the root of project, run
+
+```
+lein uberjar
+```
+
+The executables will be a `.jar` file in the `target/uberjar/` folder.
+
+## Run the CLI
+
+After building the executable jar, you can run it by
+
+```
+cd target/uberjar/
+```
+
+and then,
+
+```
+java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar [arguments]
+```
+
+_Note: the exact file name (in particular, the "0.1.0-SNAPSHOT" part) would vary based on the version number specificed in [project.clj](project.cli). However, the executable will be the one file with the postfix `-standalone.jar`_
+
+
+### (For development) Run CLI without building the executable jar
+
+In development, it may be eaiser to run the clojure code without building a jar. In this case, you could run the following command:
+
+```
+lein run -m wb-cache-warmer.core
+```
+
+You could also use the `lein repl` to interactively build and test the script.
+
+
+
+
+### CLI arguments
+
+The following command line arguemnts are available:
+
+```
+  -H, --hostname HOSTNAME  wormbase-website-preproduction.us-east-1.elasticbeanstalk.com  Host to cache from
+  -n, --thread-count N     5                                                              Thread counts
+  -a, --schedule-all                                                                      Cache all endpoints that is considered slow
+      --schedule-sample                                                                   Cache a preset sample of endpoints
+  -h, --help
+```
+
+
+## Tutorial
+
+A set of tasks that you might need to perform.
+
+### Run cache warmer on all endpoints
+
+To build cache in preparation for a release, the cache warmer should be run on all endpoints that is determined to be slow.
+
+This will take about a day.
+
+Hence, it might be a good idea to run it with Screen, in case the process is interrupted.
+
+```
+java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-all
+```
+
+### Test run cache warmer on example endpoints
+
+As a full run of the cache warmer on all the endpoints takes about a day, you may want to try a few hardcoded endpoints for testing. To do so, run
+
+```
+java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample
+```
+
+### Change the degree of parallelization
+
+To specify the degree of parallelization, use the `--thread-count` argument in combination with other argument you may need.
+
+The default thread count of 5 should work for our upstream API without overwhelming it with the precaching load.
+
+
+```
+java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample --thread-count 2
+```
+
+### Stop and resume a job
+
+The cache warmer uses a _persistent_ job queue to store all endpoints to be cached. This allows the cache warmer process to be stopped and resumed at a later time without losing the jobs in the queue.
+
+To stop the cache warmer process, interrupt it with `Ctrl-C`.
+
+To resume the cache warmer, run the cache warmer **without** the `--schedule-all` and `--schedule-sample` argument:
+
+```
+java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar
+```
+
+You may change the degree of paralleleization when resuming with the `--thread-count` argument, if needed.
+
+### Clear the job queue
+
+Occasionally, it may make sense to clear the job queue. To do so, run
+
+```
+rm -r /tmp/cache_warmer_queue
+```
+
+This removes the queue that has been persisted to disk.
+
+
+### Terminate the cache warmer process (Important!)
+
+You likely need to manually terminte the cache warmer process, ie with `Ctrl-C`.
+
+By design, the cache warmer will keep retrying failed upstream API endpoints until successful. This ensures that when the problem in the endpoints is addressed, the response will be cached without needing to re-run the cache warmer on all endpoints. This however means that failures in the endpoint that aren't addressed will cause the cahce warmer to run forever. For example, a timeout in the upstream API endpoint that persists despite of retries. In this case, a person needs to terminate the cache warmer.
+
+
 
 ## License
 

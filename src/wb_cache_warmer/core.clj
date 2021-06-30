@@ -45,7 +45,8 @@
          ident-attr)))
 
 (def slow-path-patterns
-  ["/rest/widget/gene_class/{id}/current_genes"
+  [
+   "/rest/widget/gene_class/{id}/current_genes"
    "/rest/widget/gene_class/{id}/previous_genes"
    "/rest/widget/molecule/{id}/affected"
    "/rest/widget/phenotype/{id}/rnai"
@@ -55,14 +56,12 @@
 
    "/rest/widget/gene/{id}/interactions"
    "/rest/field/gene/{id}/interaction_details"
-   "/rest/field/gene/{id}/interactions"
+
+   "/rest/widget/wbprocess/{id}/interactions"
+   "/rest/field/wbprocess/{id}/interaction_details"
 
    "/rest/widget/interaction/{id}/interactions"
    "/rest/field/interaction/{id}/interaction_details"
-   ;;"/rest/field/interaction/{id}/interactions"
-   "/rest/widget/wbprocess/{id}/interactions"
-   "/rest/field/wbprocess/{id}/interaction_details"
-   "/rest/field/wbprocess/{id}/interactions"
    ])
 
 (defn schedule-jobs-all [db hostname]
@@ -80,12 +79,16 @@
                            [?g :gene/id ?eid]]
                          db)
                     :else (get-ids-by-type db type))))]
-    (->> slow-path-patterns
-         (mapcat (fn [path-pattern]
-                   (let [ids (id-fun path-pattern)
-                         job-creator (job-creator-fun hostname path-pattern)]
-                     (map schedule-job (repeat job-creator) ids))))
-         (doall)))
+    (do
+      (info "Identifying all endpoints matching pattuern. May take a few minutes...")
+      (->> slow-path-patterns
+           (mapcat (fn [path-pattern]
+                     (do
+                       (info "Identifying endpoints with pattern" path-pattern)
+                       (let [ids (id-fun path-pattern)
+                             job-creator (job-creator-fun hostname path-pattern)]
+                         (map schedule-job (repeat job-creator) ids)))))
+           (doall))))
 )
 
 (defn schedule-jobs-sample [db hostname]
@@ -117,14 +120,18 @@
           (try
             (let [job (deref job-ref)]
               (try
-                (debug "Starting" job)
+                (debug "Starting caching" job)
                 (execute-job job)
-                (debug "Succeeded" job)
+                (debug "Succeeded caching" job)
                 (scheduler-complete! job-ref)
 
                 (catch Exception e
-                  (error e)
-                  (warn "Failed and scheduled to retry" job)
+                  (error "Failed caching"
+                         (format "%s %s"
+                                 (:status (ex-data e))
+                                 (:reason-phrase (ex-data e)))
+                         job)
+                  (warn "Scheduled to retry" job)
                   (scheduler-retry! job-ref) ; retried items are added at the end of the queue
                   )))
             (catch java.io.IOException e
@@ -157,31 +164,37 @@
     :default false]
    [nil "--schedule-sample" "Cache a preset sample of endpoints"
     :default false]
+   ["-h" "--help"]
    ])
 
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
-    (do
-      (info "CLI Options" options errors)
-      (mount/start)
-      (let [db (d/db datomic-conn)
-            hostname (:hostname options)
-            n (:thread-count options)]
-        (do
-          (cond
-           (:schedule-all options) (schedule-jobs-all db hostname)
-           (:schedule-sample options) (schedule-jobs-sample db hostname))
+    (cond
+     (:help options)
+     (println summary)
+     :else
+     (do
+       (info "CLI Options" options errors)
+       (mount/start)
+       (let [db (d/db datomic-conn)
+             hostname (:hostname options)
+             n (:thread-count options)]
+         (do
+           (cond
+            (:schedule-all options) (schedule-jobs-all db hostname)
+            (:schedule-sample options) (schedule-jobs-sample db hostname))
 
-          (->> (partial worker db)
-               (repeatedly n)
-               (pmap deref) ; wait for the futures to return
-               (doall) ; force the side effects
-               )
+           (info "Start caching...")
+           (->> (partial worker db)
+                (repeatedly n)
+                (pmap deref) ; wait for the futures to return
+                (doall) ; force the side effects
+                )
 
-          (info "Stopping!" (scheduler-stats))
+           (info "Stopping!" (scheduler-stats))
 
-          ))
+           ))
 
-      )))
+       ))))
