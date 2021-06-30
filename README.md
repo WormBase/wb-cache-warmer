@@ -1,6 +1,14 @@
 # wb-cache-warmer
 
-FIXME: description
+The cache warmer is a command line tool to help pre-cache a set of slow endpoints of the WormBase webapp.
+
+The cache warmer pings each endpoints of the webapp, resulting in the endpoints to be cached. The slow endpoints are described as parameterized URL patterns that, when combined with IDs (such as a WBGene ID), produce the actual URLs for the endpoints. The actual cache mechanism is implemented by the webapp.
+
+The cache warmer is build for parallelization. It spawns multiple processes to cache different endpoints in parallel. The only constraint is how much load the upstream API can take.
+
+The cache warmer script can be resumed if interrupted. It uses a job queue backed by the disk to track the progress of endpoint caching.
+
+The bulk of the code can be found at [src/wb_cache_warmer/core.clj](src/wb_cache_warmer/core.clj).
 
 ## Installation
 
@@ -33,6 +41,8 @@ _Note: the exact file name (in particular, the "0.1.0-SNAPSHOT" part) would vary
 
 ### Options
 
+The following command line arguemnts are available:
+
 ```
   -H, --hostname HOSTNAME  wormbase-website-preproduction.us-east-1.elasticbeanstalk.com  Host to cache from
   -n, --thread-count N     5                                                              Thread counts
@@ -40,7 +50,6 @@ _Note: the exact file name (in particular, the "0.1.0-SNAPSHOT" part) would vary
       --schedule-sample                                                                   Cache a preset sample of endpoints
   -h, --help
 ```
-
 
 
 ### Examples
