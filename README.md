@@ -16,7 +16,7 @@ The bulk of the code can be found at [src/wb_cache_warmer/core.clj](src/wb_cache
 
 _Developing on the shared dev instance would meant that all the following prerequisites are met without any additional work._
 
-_Similarly, if you have developed for the [WormBase/wormbase_rest](https://github.com/WormBase/wormbase_rest), the prerequisites are likely to be the same.
+_Similarly, if you have developed for the [WormBase/wormbase_rest](https://github.com/WormBase/wormbase_rest), the prerequisites are likely to be the same._
 
 Otherwise, please ensure Java, Clojure and [Leiningen](https://github.com/technomancy/leiningen) are installed before moving forward.
 
@@ -34,9 +34,9 @@ lein uberjar
 
 The executables will be a `.jar` file in the `target/uberjar/` folder.
 
-## Run the executable jar
+## Run the CLI
 
-After building the executable, you can run it by
+After building the executable jar, you can run it by
 
 ```
 cd target/uberjar/
@@ -45,14 +45,17 @@ cd target/uberjar/
 and then,
 
 ```
-java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar [options]
+java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar [arguments]
+
+
+
 
 ```
 
 _Note: the exact file name (in particular, the "0.1.0-SNAPSHOT" part) would vary based on the version number specificed in [project.clj](project.cli). However, the executable will be the one file with the postfix `-standalone.jar`_
 
 
-## (For development) Run CLI without building the jar
+### (For development) Run CLI without building the executable jar
 
 In development, it may be eaiser to run the clojure code without building a jar. In this case, you could run the following command:
 
@@ -62,7 +65,10 @@ lein run -m wb-cache-warmer.core
 
 You could also use the `lein repl` to interactively build and test the script.
 
-### Options
+
+
+
+### CLI arguments
 
 The following command line arguemnts are available:
 
