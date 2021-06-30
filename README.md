@@ -46,10 +46,6 @@ and then,
 
 ```
 java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar [arguments]
-
-
-
-
 ```
 
 _Note: the exact file name (in particular, the "0.1.0-SNAPSHOT" part) would vary based on the version number specificed in [project.clj](project.cli). However, the executable will be the one file with the postfix `-standalone.jar`_
@@ -81,17 +77,11 @@ The following command line arguemnts are available:
 ```
 
 
-### Examples
+## Tutorial
 
-#### Test run cache warmer on example endpoints
+A set of tasks that you might need to perform.
 
-As a full run of the cache warmer on all the endpoints takes about a day, you may want to try a few hardcoded endpoints for testing. To do so, run
-
-```
-java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample
-```
-
-#### Run cache warmer on all endpoints
+### Run cache warmer on all endpoints
 
 To build cache in preparation for a release, the cache warmer should be run on all endpoints that is determined to be slow.
 
@@ -103,7 +93,15 @@ Hence, it might be a good idea to run it with Screen, in case the process is int
 java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-all
 ```
 
-#### Change the degree of parallelization
+### Test run cache warmer on example endpoints
+
+As a full run of the cache warmer on all the endpoints takes about a day, you may want to try a few hardcoded endpoints for testing. To do so, run
+
+```
+java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample
+```
+
+### Change the degree of parallelization
 
 To specify the degree of parallelization, use the `--thread-count` argument in combination with other argument you may need.
 
@@ -114,7 +112,7 @@ The default thread count of 5 should work for our upstream API without overwhelm
 java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample --thread-count 2
 ```
 
-#### Stop and resume a job
+### Stop and resume a job
 
 The cache warmer uses a _persistent_ job queue to store all endpoints to be cached. This allows the cache warmer process to be stopped and resumed at a later time without losing the jobs in the queue.
 
@@ -128,7 +126,7 @@ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar
 
 You may change the degree of paralleleization when resuming with the `--thread-count` argument, if needed.
 
-#### Clear the job queue
+### Clear the job queue
 
 Occasionally, it may make sense to clear the job queue. To do so, run
 
@@ -139,7 +137,7 @@ rm -r /tmp/cache_warmer_queue
 This removes the queue that has been persisted to disk.
 
 
-#### Terminate the cache warmer process (Important!)
+### Terminate the cache warmer process (Important!)
 
 You likely need to manually terminte the cache warmer process, ie with `Ctrl-C`.
 
