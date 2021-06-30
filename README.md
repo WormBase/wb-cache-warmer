@@ -12,9 +12,13 @@ The cache warmer script can be **resumed if interrupted**. It uses a job queue b
 
 The bulk of the code can be found at [src/wb_cache_warmer/core.clj](src/wb_cache_warmer/core.clj).
 
-## Installation
+## Prerequisites
 
-Please ensure Java, Clojure and [Leiningen](https://github.com/technomancy/leiningen) are installed before moving forward.
+_Developing on the shared dev instance would meant that all the following prerequisites are met without any additional work._
+
+_Similarly, if you have developed for the [WormBase/wormbase_rest](https://github.com/WormBase/wormbase_rest), the prerequisites are likely to be the same.
+
+Otherwise, please ensure Java, Clojure and [Leiningen](https://github.com/technomancy/leiningen) are installed before moving forward.
 
 This app is developed with Clojure 1.9.0, Leiningen (lein) 2.8.3, and OpenJDK 1.8.0_265.
 
