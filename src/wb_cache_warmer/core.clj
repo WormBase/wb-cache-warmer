@@ -79,12 +79,16 @@
                            [?g :gene/id ?eid]]
                          db)
                     :else (get-ids-by-type db type))))]
-    (->> slow-path-patterns
-         (mapcat (fn [path-pattern]
-                   (let [ids (id-fun path-pattern)
-                         job-creator (job-creator-fun hostname path-pattern)]
-                     (map schedule-job (repeat job-creator) ids))))
-         (doall)))
+    (do
+      (info "Identifying all endpoints matching pattuern. May take a few minutes...")
+      (->> slow-path-patterns
+           (mapcat (fn [path-pattern]
+                     (do
+                       (info "Identifying endpoints with pattern" path-pattern)
+                       (let [ids (id-fun path-pattern)
+                             job-creator (job-creator-fun hostname path-pattern)]
+                         (map schedule-job (repeat job-creator) ids)))))
+           (doall))))
 )
 
 (defn schedule-jobs-sample [db hostname]
@@ -178,6 +182,7 @@
             (:schedule-all options) (schedule-jobs-all db hostname)
             (:schedule-sample options) (schedule-jobs-sample db hostname))
 
+           (info "Start caching...")
            (->> (partial worker db)
                 (repeatedly n)
                 (pmap deref) ; wait for the futures to return
