@@ -26,18 +26,33 @@ lein uberjar
 
 The executables will be a `.jar` file in the `target/uberjar/` folder.
 
-## Run the executable (CLI)
+## Run the executable jar
 
 After building the executable, you can run it by
 
 ```
 cd target/uberjar/
+```
 
+and then,
+
+```
 java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar [options]
 
 ```
 
 _Note: the exact file name (in particular, the "0.1.0-SNAPSHOT" part) would vary based on the version number specificed in [project.clj](project.cli). However, the executable will be the one file with the postfix `-standalone.jar`_
+
+
+## (For development) Run CLI without building the jar
+
+In development, it may be eaiser to run the clojure code without building a jar. In this case, you could run the following command:
+
+```
+lein run -m wb-cache-warmer.core
+```
+
+You could also use the `lein repl` to interactively build and test the script.
 
 ### Options
 
