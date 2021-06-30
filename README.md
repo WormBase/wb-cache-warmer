@@ -57,6 +57,9 @@ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample
 
 To build cache in preparation for a release, the cache warmer should be run on all endpoints that is determined to be slow.
 
+This will take about a day.
+
+Hence, it might be a good idea to run it with Screen, in case the process is interrupted.
 
 ```
 java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-all
@@ -75,7 +78,7 @@ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample --thre
 
 #### Stop and resume a job
 
-The cache warmer uses a _persistent_ job queue to store all endpoints to be cached. This allows the cache warmer process to be stopped and resumed at a lter time without losing the jobs in the queue.
+The cache warmer uses a _persistent_ job queue to store all endpoints to be cached. This allows the cache warmer process to be stopped and resumed at a later time without losing the jobs in the queue.
 
 To stop the cache warmer process, interrupt it with `Ctrl-C`.
 
@@ -92,16 +95,17 @@ You may change the degree of paralleleization when resuming with the `--thread-c
 Occasionally, it may make sense to clear the job queue. To do so, run
 
 ```
-rm -r tmp/cache_warmer_queue
+rm -r /tmp/cache_warmer_queue
 ```
 
 This removes the queue that has been persisted to disk.
 
-...
 
-### Known issues
+#### Terminate the cache warmer process (Important!)
 
-- The cache warmer will keep retrying failed upstream API endpoints until successful. This ensures that when the problem in the endpoints is addressed, the response will be cached without needing to re-run the cache warmer. This however means that failures in the endpoint that aren't addressed will cause the cahce warmer to run forever. An example of such a failure is timeout in the upstream API endpoint that persists despite of retries. In this case, a person needs to terminate the cache warmer.
+You likely need to manually terminte the cache warmer process, ie with `Ctrl-C`.
+
+By design, the cache warmer will keep retrying failed upstream API endpoints until successful. This ensures that when the problem in the endpoints is addressed, the response will be cached without needing to re-run the cache warmer on all endpoints. This however means that failures in the endpoint that aren't addressed will cause the cahce warmer to run forever. For example, a timeout in the upstream API endpoint that persists despite of retries. In this case, a person needs to terminate the cache warmer.
 
 
 
