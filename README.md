@@ -2,19 +2,23 @@
 
 The cache warmer is a command line tool to help pre-cache a set of slow endpoints of the WormBase webapp.
 
+## Technical overview
+
 The cache warmer pings each endpoints of the webapp, resulting in the endpoints to be cached. The slow endpoints are described as parameterized URL patterns that, when combined with IDs (such as a WBGene ID), produce the actual URLs for the endpoints. The actual cache mechanism is implemented by the webapp.
 
-The cache warmer is build for parallelization. It spawns multiple processes to cache different endpoints in parallel. The only constraint is how much load the upstream API can take.
+The cache warmer is build for **parallelization**. It spawns multiple processes to cache different endpoints in parallel. The only constraint is how much load the upstream API can take.
 
-The cache warmer script can be resumed if interrupted. It uses a job queue backed by the disk to track the progress of endpoint caching.
+The cache warmer script can be **resumed if interrupted**. It uses a job queue backed by the disk to track the progress of endpoint caching.
 
 The bulk of the code can be found at [src/wb_cache_warmer/core.clj](src/wb_cache_warmer/core.clj).
 
 ## Installation
 
-Please ensure JVM runtime, Clojure and [Leiningen](https://github.com/technomancy/leiningen) are installed before moving forward.
+Please ensure Java, Clojure and [Leiningen](https://github.com/technomancy/leiningen) are installed before moving forward.
 
-## Build the Cache Warmer CLI
+This app is developed with Clojure 1.9.0, Leiningen (lein) 2.8.3, and OpenJDK 1.8.0_265.
+
+## Build the cache warmer CLI (executable jar)
 
 To run the cache warmer, you need to build the executable for the cache warmer CLI
 
