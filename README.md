@@ -14,11 +14,14 @@ The bulk of the code can be found at [src/wb_cache_warmer/core.clj](src/wb_cache
 
 ## Prerequisites
 
-_Developing on the shared dev instance would meant that all the following prerequisites are met without any additional work._
+It is recommanded that you develop and run the cache warmer on the shared development server, where every dependency other than Datomic-pro has been installed.
 
 _Similarly, if you have developed for the [WormBase/wormbase_rest](https://github.com/WormBase/wormbase_rest), the prerequisites are likely to be the same._
 
-Otherwise, please ensure Java, Clojure and [Leiningen](https://github.com/technomancy/leiningen) are installed before moving forward.
+Otherwise, please ensure Java, Clojure, [Leiningen](https://github.com/technomancy/leiningen), and [Datomic Pro](https://docs.datomic.com/on-prem/getting-started/get-datomic.html) are installed before moving forward.
+
+The version of Datomic Pro installed should match the version of Datomic Pro specified in [project.clj(project.clj).
+
 
 This app is developed with Clojure 1.9.0, Leiningen (lein) 2.8.3, and OpenJDK 1.8.0_265.
 
