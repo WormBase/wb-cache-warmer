@@ -61,7 +61,7 @@ You could also use the `lein repl` to interactively build and test the script.
 
 ### CLI arguments
 
-The following command line arguemnts are available:
+The following optional command line arguments and their defaults:
 
 ```
   -H, --hostname HOSTNAME  wormbase-website-preproduction.us-east-1.elasticbeanstalk.com  Host to cache from
@@ -72,7 +72,7 @@ The following command line arguemnts are available:
 ```
 
 
-## Tutorial
+## Common Tasks
 
 A set of tasks that you might need to perform.
 
