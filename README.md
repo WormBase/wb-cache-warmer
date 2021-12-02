@@ -79,6 +79,7 @@ The following optional command line arguments and their defaults:
 Since a full run of the cache warmer on all the endpoints takes about a day, you may want to try a few hardcoded endpoints for testing. To do so, run
 
 ```
+$ cd target/uberjar/
 $ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample
 ```
 
@@ -90,6 +91,7 @@ This will take about a day. Hence, it might be a good idea to run it with screen
 
 ```
 $ screen -S wb-cache
+$ cd target/uberjar/
 $ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-all
 ```
 
@@ -101,6 +103,7 @@ The default thread count of 5 should work for our upstream API without overwhelm
 
 
 ```
+$ cd target/uberjar/
 $ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample --thread-count 2
 ```
 
@@ -113,6 +116,7 @@ To stop the cache warmer process, interrupt it with `Ctrl-C`.
 To resume the cache warmer, run the cache warmer **without** the `--schedule-all` and `--schedule-sample` argument:
 
 ```
+$ cd target/uberjar/
 $ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar
 ```
 
