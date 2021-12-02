@@ -74,26 +74,23 @@ The following optional command line arguments and their defaults:
 
 ## Common Tasks
 
-A set of tasks that you might need to perform.
-
-### Run cache warmer on all endpoints
-
-To build cache in preparation for a release, the cache warmer should be run on all endpoints that is determined to be slow.
-
-This will take about a day.
-
-Hence, it might be a good idea to run it with Screen, in case the process is interrupted.
-
-```
-$ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-all
-```
-
 ### Test run cache warmer on example endpoints
 
-As a full run of the cache warmer on all the endpoints takes about a day, you may want to try a few hardcoded endpoints for testing. To do so, run
+Since a full run of the cache warmer on all the endpoints takes about a day, you may want to try a few hardcoded endpoints for testing. To do so, run
 
 ```
 $ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample
+```
+
+### Run the cache warmer on all endpoints
+
+To build the cache in preparation for a release, the cache warmer should be run on all endpoints that are determined to be slow.
+
+This will take about a day. Hence, it might be a good idea to run it with screen in case the process is interrupted.
+
+```
+$ screen -S wb-cache
+$ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-all
 ```
 
 ### Change the degree of parallelization
