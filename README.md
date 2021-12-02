@@ -45,7 +45,7 @@ $ cd target/uberjar/
 $ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar [arguments]
 ```
 
-_Note: the exact file name (in particular, the "0.1.0-SNAPSHOT" part) would vary based on the version number specificed in [project.clj](project.cli). However, the executable will be the one file with the postfix `-standalone.jar`_
+_Note: the exact file name (in particular, the "0.1.0-SNAPSHOT" part) varies based on the version number specificed in [project.clj](project.cli). However, the executable will be the one file with the postfix `-standalone.jar`_
 
 
 ### (For development) Run CLI without building the executable jar
@@ -53,12 +53,10 @@ _Note: the exact file name (in particular, the "0.1.0-SNAPSHOT" part) would vary
 In development, it may be eaiser to run the clojure code without building a jar. In this case, you could run the following command:
 
 ```
-lein run -m wb-cache-warmer.core
+$ lein run -m wb-cache-warmer.core
 ```
 
 You could also use the `lein repl` to interactively build and test the script.
-
-
 
 
 ### CLI arguments
@@ -87,7 +85,7 @@ This will take about a day.
 Hence, it might be a good idea to run it with Screen, in case the process is interrupted.
 
 ```
-java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-all
+$ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-all
 ```
 
 ### Test run cache warmer on example endpoints
@@ -95,7 +93,7 @@ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-all
 As a full run of the cache warmer on all the endpoints takes about a day, you may want to try a few hardcoded endpoints for testing. To do so, run
 
 ```
-java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample
+$ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample
 ```
 
 ### Change the degree of parallelization
@@ -106,7 +104,7 @@ The default thread count of 5 should work for our upstream API without overwhelm
 
 
 ```
-java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample --thread-count 2
+$ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar --schedule-sample --thread-count 2
 ```
 
 ### Stop and resume a job
@@ -118,7 +116,7 @@ To stop the cache warmer process, interrupt it with `Ctrl-C`.
 To resume the cache warmer, run the cache warmer **without** the `--schedule-all` and `--schedule-sample` argument:
 
 ```
-java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar
+$ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar
 ```
 
 You may change the degree of paralleleization when resuming with the `--thread-count` argument, if needed.
@@ -128,7 +126,7 @@ You may change the degree of paralleleization when resuming with the `--thread-c
 Occasionally, it may make sense to clear the job queue. To do so, run
 
 ```
-rm -r /tmp/cache_warmer_queue
+$ rm -r /tmp/cache_warmer_queue
 ```
 
 This removes the queue that has been persisted to disk.
