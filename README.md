@@ -6,7 +6,7 @@ The cache warmer is a command line tool to help pre-cache a set of slow endpoint
 
 The cache warmer pings each endpoints of the webapp, resulting in the endpoints to be cached. The slow endpoints are described as parameterized URL patterns that, when combined with IDs (such as a WBGene ID), produce the actual URLs for the endpoints. The actual cache mechanism is implemented by the webapp.
 
-The cache warmer is build for **parallelization**. It spawns multiple processes to cache different endpoints in parallel. The only constraint is how much load the upstream API can take.
+The cache warmer is built for **parallelization**. It spawns multiple processes to cache different endpoints in parallel. The only constraint is how much load the upstream API can take.
 
 The cache warmer script can be **resumed if interrupted**. It uses a job queue backed by the disk to track the progress of endpoint caching.
 
