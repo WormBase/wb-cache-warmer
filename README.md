@@ -29,10 +29,9 @@ This app is developed with Clojure 1.9.0, Leiningen (lein) 2.8.3, and OpenJDK 1.
 
 To run the cache warmer, you need to build the executable for the cache warmer CLI
 
-At the root of project, run
-
 ```
-lein uberjar
+$ cd wb-cache-warmer
+$ lein uberjar
 ```
 
 The executables will be a `.jar` file in the `target/uberjar/` folder.
@@ -42,13 +41,8 @@ The executables will be a `.jar` file in the `target/uberjar/` folder.
 After building the executable jar, you can run it by
 
 ```
-cd target/uberjar/
-```
-
-and then,
-
-```
-java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar [arguments]
+$ cd target/uberjar/
+$ java -jar wb-cache-warmer-0.1.0-SNAPSHOT-standalone.jar [arguments]
 ```
 
 _Note: the exact file name (in particular, the "0.1.0-SNAPSHOT" part) would vary based on the version number specificed in [project.clj](project.cli). However, the executable will be the one file with the postfix `-standalone.jar`_
@@ -150,7 +144,7 @@ By design, the cache warmer will keep retrying failed upstream API endpoints unt
 
 ## License
 
-Copyright © 2019 FIXME
+Copyright © 2021 The WormBase Consortium
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
