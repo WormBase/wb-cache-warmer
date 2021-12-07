@@ -1,0 +1,19 @@
+
+
+21-12-07 16:23:36 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/widget/gene_class/tag/previous_genes?content-type=application/json"}
+21-12-07 16:28:39 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/widget/gene_class/tag/previous_genes?content-type=application/json"}
+
+21-12-07 16:23:53 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/field/gene/WBGene00004888/interaction_details?content-type=application/json"}
+21-12-07 16:29:06 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/field/gene/WBGene00004888/interaction_details?content-type=application/json"}
+
+21-12-07 16:26:01 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/widget/phenotype/WBPhenotype:0000050/rnai?content-type=application/json"}
+21-12-07 16:20:42 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/widget/phenotype/WBPhenotype:0000050/rnai?content-type=application/json"}
+
+21-12-07 16:28:36 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/field/gene/WBGene00000898/interaction_details?content-type=application/json"}
+21-12-07 16:21:01 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/field/gene/WBGene00000898/interaction_details?content-type=application/json"}
+
+21-12-07 16:28:54 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/widget/molecule/WBMol:00004127/affected?content-type=application/json"}
+21-12-07 16:23:38 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/widget/molecule/WBMol:00004127/affected?content-type=application/json"}
+
+21-12-07 16:31:01 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/widget/phenotype/WBPhenotype:0000062/variation?content-type=application/json"}
+21-12-07 16:24:06 staging.localdomain ERROR [wb-cache-warmer.core:129] - Failed caching 500 Internal Server Error {:url "http://wormbase-website-preproduction.us-east-1.elasticbeanstalk.com/rest/widget/phenotype/WBPhenotype:0000062/variation?content-type=application/json"}
